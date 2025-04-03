@@ -1,3 +1,6 @@
+# description
+A vue3 boilerplate with Typescript, Vue router, Pinia store, Tailwind, SASS, JEST, VTU, Json-server, Autoimports **All inclusive**
+
 # install
 pnpm install --save-dev @vue/test-utils
 pnpm add --save-dev jest
