@@ -9,25 +9,40 @@ defineProps<{
   items: Todo[]
 }>()
 
-const updateTodoName = (item: Todo, newName: string) => useTodoStore().updateName(item, newName)
+const updateTodo = (item: Todo, newName: string) => useTodoStore().updateName(item, newName)
+.then(e => closeForm())
+
+const createTodo = (item: Todo, newName: string) => useTodoStore().addNewTodo(item, newName)
+.then(e => closeForm())
+
 const toggleTodoStatus = (item: Todo) => useTodoStore().updateStatus(item)
 
-const formModel = ref<boolean>(false)
+const updateFormModel = ref<boolean>(false)
 const formItem = ref<Todo>()
+const formAction = ref<string>('')
+const isUpdate = computed(() => formAction.value === 'update')
+// const isCreate = computed(() => formAction.value === 'create')
 
-const showUpdateForm = (item: Todo): void => {
-  formModel.value = true
+const showUpdateForm = (item: Todo, action: string): void => {
+  updateFormModel.value = true
   formItem.value = item
+  formAction.value = action
+}
+
+const closeForm = (): void => {
+  updateFormModel.value = false
 }
 </script>
 
 <template>
   <h2>Todo list</h2>
+  <Vbutton @click="showUpdateForm({ name: '', status: false, id: '' }, 'create')" :btnTitle="'Add new todo'"/>
 
   <ul>
     <TodoItems v-for="(item, itemId) in items" :key="itemId" :item="item">
       <template #title>
         <p
+          class="todo-title bg-avocado-600"
           :class="{ '--done': item.status}"
         >
           Name: {{ item.name }}
@@ -35,21 +50,30 @@ const showUpdateForm = (item: Todo): void => {
       </template>
       
       <template #actions>
-        <Vbutton @click="showUpdateForm(item)" :btnTitle="'update'"/>
+        <Vbutton @click="showUpdateForm(item, 'update')" :btnTitle="'update'"/>
         <Vbutton @click="toggleTodoStatus(item)" :btnTitle="'validate'"/>
       </template>
     </TodoItems>
   </ul>
 
-  <UpdateTodoForm v-if="formModel" v-model="formModel" :item="formItem" >
+  <UpdateTodoForm v-if="updateFormModel" v-model="updateFormModel" :item="formItem">
     <template #actions="{slotProps}">
-      <Vbutton @click="updateTodoName(slotProps.item, slotProps.newName)" :btnTitle="'Valider'" />
+      <Vbutton v-if="isUpdate" @click="updateTodo(slotProps.item, slotProps.newName)" :btnTitle="'Valider'" />
+      <Vbutton v-else @click="createTodo(slotProps.item, slotProps.newName)" :btnTitle="'Creer'" />
     </template>
   </UpdateTodoForm>
 
-  <!-- <UpdateTodoForm v-if="formModel" v-model="formModel" v-model:title="formItem.name" :item="formItem">
+  <!-- <UpdateTodoForm v-if="updateFormModel" v-model="updateFormModel" v-model:title="formItem.name" :item="formItem">
     <template #actions>
-      <Vbutton @click="updateTodoName(formItem)" :btnTitle="'changer nom'"/>
+      <Vbutton @click="updateTodo(formItem)" :btnTitle="'changer nom'"/>
     </template>
   </UpdateTodoForm> -->
 </template>
+
+<style scoped lang="postcss">
+/* You will need this line in every component if you use the @apply directive in your style */
+/* @reference "../../assets/main.css";
+.todo-title {
+  @apply text-3xl font-bold underline;
+} */
+</style>

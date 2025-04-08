@@ -7,5 +7,5 @@ store.loadTodos()
 </script>
 
 <template>
-  <TodoList :items="store.todoItems" />
+  <TodoList v-if="store.todoItems" :items="store.todoItems" />
 </template>

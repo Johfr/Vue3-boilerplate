@@ -1,22 +1,28 @@
 <script setup lang="ts">
-import Vbutton from '@/design-system/Vbutton.vue';
+// Formulaire d'ajout de nouvelle tâche et d'update de nom de tâche
+
+import Vbutton from '@/design-system/Vbutton.vue'
 import { Todo } from '@/types/Todo'
 
 defineProps<{
-  item: Todo | undefined
+  item: Todo | undefined | null
 }>()
 
 const formModel = defineModel()
-const newName = ref<String>('')
+const newName = ref<string>('')
 const closeForm = () => formModel.value = false
+
+// Créer ou updater l'item ici ?
+// Sécuriser le formulaire : item.name != '', name existe déjà
 </script>
 
 <template>
   <div class="form-container">
     <div class="overlay" @click="closeForm"></div>
-    <form>
+    <form class="form" @submit.prevent>
       <label for="title">
-        <input id="title" type="text" :placeholder="item.name" v-model="newName"/>
+        <input v-if="item.name" id="title" type="text" :value="item.name" />
+        <input v-else id="title" type="text" placeholder="Nouvel item" v-model="newName" />
       </label>
 
       <slot name="actions" :slotProps="{item, newName}"></slot>
@@ -37,6 +43,7 @@ const closeForm = () => formModel.value = false
   right: 0;
   bottom: 0;
 }
+
 .overlay {
   width: 100%;
   height: 100%;
@@ -46,7 +53,7 @@ const closeForm = () => formModel.value = false
   z-index: 5;
   background-color: rgba(255 255 255/0.1);
 }
-form {
+.form {
   display: flex;
   flex-direction: column;
   align-items: center;

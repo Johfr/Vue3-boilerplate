@@ -143,6 +143,9 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }
+    },
+    watch: {
+      ignored: ['**/db.json'] // <== empêche le hot-reload sur ce fichier
     }
   }
 })

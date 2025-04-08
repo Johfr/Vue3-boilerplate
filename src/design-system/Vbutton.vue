@@ -3,7 +3,7 @@ defineProps<{btnTitle: string}>()
 </script>
 
 <template>
-  <button @click.prevent>
+  <button type="button" class="btn">
     {{btnTitle}}
   </button>
 </template>

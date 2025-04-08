@@ -21,10 +21,31 @@ export const useTodos = () => {
     }
   }
 
+  const updateTodo = async (item: Todo, method: string): Promise<void> => {
+    loading.value = true
+    try {
+      let fetchUri = '/api/todos/'+ item.id
+
+      if (method === 'POST') fetchUri = '/api/todos/'
+      
+      const res = await fetch(fetchUri, {
+        method,
+        body: JSON.stringify(item)
+      })
+      
+      if (!res.ok) throw new Error('Erreur serveur')
+    } catch (err: any) {
+      error.value = err
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     todoItems,
     loading,
     error,
-    fetchTodos
+    fetchTodos,
+    updateTodo,
   }
 }
